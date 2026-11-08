@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Chiptune Studio
+Comment=Create chiptune sounds and songs
+Exec=chiptune_studio
+Icon=chiptune-studio
+Terminal=false
+Categories=AudioVideo;Audio;Midi;
+Keywords=music;chiptune;synthesizer;piano roll;

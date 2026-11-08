@@ -1,0 +1,590 @@
+# Chiptune Studio — Development TODO
+
+## 1. Project Overview
+
+Create a lightweight desktop music production application focused primarily on chiptune music, with support for synthesizing sounds and creating sample-based instruments.
+
+The application should be built using:
+
+- **Language:** C++
+- **UI Framework:** Raven UI (https://oscar-soirey.github.io/Raven/) (https://github.com/oscar-soirey/Raven)
+- **Audio output:** Native audio playback engine
+- **Audio format:** WAV (PCM)
+- **Primary composition interface:** Piano roll
+
+The application should prioritize simplicity, usability and a focused feature set.
+
+It should not attempt to become a full Digital Audio Workstation (DAW). Avoid implementing unnecessary professional audio production features.
+
+### Core philosophy
+
+The application has two primary workflows:
+
+1. Create and design sounds using a procedural sound generator.
+2. Use generated sounds as samples in a piano-roll-based song editor.
+
+Sounds should be independently exportable as WAV files and reusable across multiple projects.
+
+Songs and individual tracks should also be exportable as WAV files.
+
+---
+
+# 2. Application Structure
+
+Organize the application into three primary workspaces.
+
+- Sound Workshop
+- Song Workshop
+- Sample Workshop
+
+A shared project and asset management system should connect these workspaces.
+
+## 2.1 Sound Workshop — Procedural Sound Generator
+
+[ ] Implement a procedural audio generation system.
+
+[x] Support basic oscillator waveforms:
+- Square wave
+- Triangle wave
+- Sawtooth wave
+- Sine wave
+- Noise
+
+[x] Implement basic oscillator controls:
+- Frequency / pitch
+- Volume
+- Duty cycle (for square/pulse waves)
+
+[x] Implement a simple ADSR envelope:
+- Attack
+- Decay
+- Sustain
+- Release
+
+[x] Implement basic sound modulation:
+- Vibrato
+- Simple pitch modulation
+
+[x] Provide a real-time sound preview.
+
+[x] Allow users to play individual notes at different pitches to audition a sound.
+
+[x] Allow users to generate a complete sound sample with a configurable duration.
+
+[x] Allow exporting generated sounds as WAV files.
+
+[x] Allow saving generator configurations as reusable instrument presets.
+
+[x] Allow loading and modifying previously saved instrument presets.
+
+### Initial scope limitations
+
+Keep the synthesizer deliberately simple.
+
+Do not implement:
+- Complex modulation matrices
+- Modular synthesis
+- Advanced filter routing
+- Multi-oscillator routing systems
+- Complex LFO configurations
+- Extensive effect chains
+
+These features may be considered for future expansion, but are explicitly outside the initial development scope.
+
+The initial generator should be capable of producing recognizable chiptune sounds and simple synthesized bass sounds without requiring extensive configuration.
+
+---
+
+## 2.2 Sample Workshop — Sample Management
+
+[x] Implement WAV file importing.
+
+[x] Display the imported sample's waveform.
+
+[x] Allow auditioning samples.
+
+[x] Allow basic trimming of samples.
+
+[x] Allow adjusting sample playback volume.
+
+[x] Allow looping a sample.
+
+[x] Allow exporting modified samples as WAV files.
+
+[x] Allow assigning samples to reusable instrument definitions.
+
+[ ] Provide an asset library containing generated and imported samples.
+
+### Sample management
+
+Samples should be reusable across projects.
+
+An instrument should reference its associated sample rather than duplicate the audio data unnecessarily.
+
+Support basic metadata:
+- Instrument name
+- Sample location
+- Sample duration
+- Sample rate
+- Channel count
+- Loop settings
+
+---
+
+## 2.3 Song Workshop — Piano Roll Composer
+
+This is the primary music composition workspace.
+
+[ ] Implement a timeline-based song editor.
+
+[ ] Implement a piano roll for note placement.
+
+[ ] Display a vertical piano keyboard alongside the note grid.
+
+[ ] Allow clicking and dragging to create notes.
+
+[ ] Allow resizing notes to change their duration.
+
+[ ] Allow moving notes between pitches and timeline positions.
+
+[ ] Allow deleting notes.
+
+[ ] Allow selecting multiple notes.
+
+[ ] Implement basic copy, paste and duplication functionality.
+
+[ ] Display a configurable beat grid.
+
+[ ] Support snapping notes to the grid.
+
+[ ] Implement adjustable BPM.
+
+[ ] Support configurable time signatures.
+
+[ ] Implement playback from the current playhead position.
+
+[ ] Display a playback indicator in the piano roll.
+
+[ ] Support looping playback over a selected region.
+
+### Track management
+
+[ ] Allow creating multiple independent tracks.
+
+[ ] Allow assigning an instrument/sample to each track.
+
+[ ] Allow renaming tracks.
+
+[ ] Allow muting and soloing tracks.
+
+[ ] Allow adjusting track volume.
+
+[ ] Allow basic stereo panning.
+
+[ ] Allow reordering tracks.
+
+[ ] Allow removing tracks.
+
+### Initial composition limitations
+
+Keep the composition workflow focused.
+
+Do not implement:
+- Advanced automation systems
+- Complex mixing consoles
+- MIDI device routing
+- Professional mastering tools
+- Extensive plugin support
+
+These can be considered later if there is a genuine need.
+
+---
+
+# 3. Audio Engine
+
+The audio engine should be independent of the UI.
+
+It should be possible to generate, play, manipulate and export audio without depending on Raven UI.
+
+[x] Implement an audio engine responsible for audio generation and playback.
+
+[x] Implement procedural waveform generation.
+
+[x] Implement sample playback.
+
+[ ] Implement mixing of multiple audio tracks.
+
+[ ] Implement playback synchronization with the song timeline.
+
+[ ] Implement audio buffering.
+
+[ ] Prevent UI operations from blocking audio playback.
+
+[ ] Ensure audio processing does not allocate memory unnecessarily in the real-time audio callback.
+
+[ ] Support configurable sample rates.
+
+[ ] Support stereo audio output.
+
+[ ] Implement basic clipping protection.
+
+[ ] Implement proper audio engine initialization and shutdown.
+
+### Audio architecture
+
+Keep the following responsibilities separated:
+
+- Audio generation
+- Sample playback
+- Instrument management
+- Track playback
+- Audio mixing
+- Audio output
+- WAV encoding/export
+
+Avoid coupling the audio engine directly to UI components.
+
+---
+
+# 4. WAV Export
+
+WAV is the primary audio interchange format.
+
+[ ] Export generated sounds as WAV.
+
+[ ] Export individual samples as WAV.
+
+[ ] Export individual song tracks as WAV.
+
+[ ] Export complete songs as a mixed WAV file.
+
+[ ] Support configurable export sample rates.
+
+[ ] Support 16-bit PCM.
+
+[ ] Support 24-bit PCM.
+
+[ ] Support stereo and mono export where applicable.
+
+[ ] Display export progress for longer exports.
+
+[ ] Ensure exported audio has the correct duration and sample count.
+
+### Export behavior
+
+Track exports should render the selected track independently, without including other tracks.
+
+Full-song exports should mix all unmuted tracks together.
+
+Exported audio should be rendered from the project data rather than simply recording the real-time audio output.
+
+This ensures consistent export quality regardless of playback performance.
+
+---
+
+# 5. Project and Asset Management
+
+[ ] Implement a native project file format.
+
+[ ] Save song arrangements.
+
+[ ] Save track configurations.
+
+[ ] Save instrument configurations.
+
+[ ] Save sample references.
+
+[ ] Save tempo and time signature.
+
+[ ] Save piano roll note data.
+
+[ ] Implement project loading.
+
+[ ] Implement project saving.
+
+[ ] Implement basic missing-asset detection.
+
+[ ] Implement project-relative asset paths.
+
+### Important
+
+WAV files should remain independent audio assets.
+
+Native project files should store the information required to reconstruct the song and instruments.
+
+Do not use WAV files as the primary storage format for editable instrument definitions or song arrangements.
+
+---
+
+# 6. User Interface
+
+Use Raven UI for the entire application interface.
+
+[x] Establish the main application window.
+
+[x] Implement workspace navigation.
+
+[x] Implement the Sound Workshop interface.
+
+[x] Implement the Sample Workshop interface.
+
+[ ] Implement the Song Workshop interface.
+
+[ ] Implement shared asset browsing.
+
+[x] Implement playback controls.
+
+[ ] Implement project management controls.
+
+[ ] Implement basic keyboard shortcuts.
+
+### UI design philosophy
+
+The application should have a clean, compact and functional interface.
+
+Prioritize:
+- Clear visual hierarchy.
+- Minimal unnecessary controls.
+- Fast access to frequently used functionality.
+- Consistent interaction patterns.
+- Clear feedback for audio playback and editing operations.
+
+Avoid cluttering the interface with advanced options that are not part of the initial scope.
+
+The piano roll should receive particular attention as it will be the primary composition interface.
+
+---
+
+# 7. Development Order
+
+Implement the application in the following order.
+
+## Phase 1 — Foundation
+[x] Set up the C++ project.
+
+[x] Integrate Raven UI.
+
+[x] Establish the application architecture.
+
+[x] Implement the audio engine foundation.
+
+[x] Implement WAV loading and writing.
+
+[x] Implement basic audio playback.
+
+**Milestone:** An application capable of loading and playing WAV files.
+
+## Phase 2 — Sound Workshop
+[x] Implement waveform generation.
+
+[x] Implement oscillator controls.
+
+[x] Implement ADSR envelopes.
+
+[x] Implement basic modulation.
+
+[x] Implement sound preview.
+
+[x] Implement WAV generation and export.
+
+[x] Implement instrument presets.
+
+**Milestone:** Users can create, audition, save and export synthesized sounds.
+
+## Phase 3 — Sample Workshop
+[x] Implement sample importing.
+
+[x] Implement waveform visualization.
+
+[x] Implement sample trimming.
+
+[x] Implement sample playback.
+
+[x] Implement sample looping.
+
+[ ] Implement the shared asset library.
+
+**Milestone:** Users can manage and prepare audio samples for music composition.
+
+## Phase 4 — Song Workshop
+[ ] Implement the song timeline.
+
+[ ] Implement the piano roll.
+
+[ ] Implement note editing.
+
+[ ] Implement instrument assignment.
+
+[ ] Implement multiple tracks.
+
+[ ] Implement synchronized playback.
+
+[ ] Implement looping.
+
+**Milestone:** Users can compose and play complete songs using their own instruments and samples.
+
+## Phase 5 — Export and Projects
+[ ] Implement native project serialization.
+
+[ ] Implement project loading and saving.
+
+[ ] Implement individual track rendering.
+
+[ ] Implement full-song rendering.
+
+[ ] Implement configurable WAV export.
+
+**Milestone:** Users can create, save, reopen and export complete music projects.
+
+## Phase 6 — Polish
+[ ] Improve UI usability.
+
+[ ] Add keyboard shortcuts.
+
+[ ] Improve playback stability.
+
+[ ] Test audio synchronization.
+
+[ ] Test export correctness.
+
+[ ] Fix discovered bugs.
+
+[ ] Optimize performance.
+
+**Milestone:** A stable and usable initial release.
+
+---
+
+# 8. Explicitly Out of Scope for Initial Release
+
+The following features should NOT be implemented during the initial development:
+
+- Advanced synthesizer architecture.
+- Complex modulation systems.
+- VST/AU plugin hosting.
+- MIDI hardware integration.
+- Advanced mixing and mastering.
+- Complex automation.
+- Professional audio routing.
+- Extensive audio effects libraries.
+- Cloud synchronization.
+- Collaboration features.
+
+These are potential future expansions, not requirements.
+
+Do not let these features complicate the initial architecture unnecessarily.
+
+---
+
+# 9. Implementation Guidelines
+
+- Use modern C++.
+- Keep the audio engine independent of Raven UI.
+- Prefer clear subsystem boundaries.
+- Avoid unnecessary dependencies.
+- Avoid implementing features before their dependencies are established.
+- Keep the application usable throughout development.
+- Build and test incrementally after each phase.
+- Do not introduce speculative abstractions without a practical use case.
+- Document important architectural decisions.
+- Prioritize correctness and stability over feature count.
+
+Before implementing Raven UI components, inspect the existing Raven UI framework and its documentation. Do not assume APIs or invent framework functionality.
+
+10. Installation and Setup Script
+
+Create a setup.sh script in the project root.
+
+The script must automate everything required to build, install and run the application on a supported Linux system.
+
+10.1 Dependency Management
+
+[x] Detect the current Linux distribution and available package manager.
+
+[x] Identify all required build dependencies.
+
+[x] Identify all required runtime dependencies.
+
+[x] Install missing dependencies automatically.
+
+[x] Skip dependencies that are already installed.
+
+[x] Avoid reinstalling or unnecessarily modifying existing packages.
+
+[x] Handle package manager differences between supported distributions.
+
+[x] Provide clear terminal output describing what is being checked, installed or skipped.
+
+[x] Detect missing package managers or unsupported distributions and provide useful error messages.
+
+10.2 Build Process
+
+[x] Create the necessary build directory.
+
+[x] Configure the C++ project using the selected build system.
+
+[x] Build the application.
+
+[x] Detect and report compilation failures.
+
+[x] Ensure build failures prevent the installation stage from continuing.
+
+[x] Support rebuilding without requiring manual cleanup of the build directory.
+
+10.3 System Installation
+
+[x] Install the compiled application into the appropriate system locations.
+
+[x] Install required runtime libraries or ensure their dependencies are available.
+
+[x] Install application resources and assets.
+
+[x] Create a desktop application entry so the application appears in the desktop environment's application launcher.
+
+[x] Install an application icon if available.
+
+[x] Ensure the application can be launched without manually navigating to the build directory.
+
+[ ] Configure any required runtime paths or environment settings.
+
+[x] Use appropriate installation permissions.
+
+[x] Avoid unnecessarily overwriting unrelated system files.
+
+10.4 Script Behavior
+
+The setup script should be idempotent.
+
+Running it multiple times should be safe.
+
+Already-installed dependencies must be skipped.
+
+Existing build directories should be reused where possible.
+
+Existing installations should be updated rather than duplicated.
+
+Existing configuration and user project data must not be deleted.
+
+Installation should be repeatable without requiring manual cleanup.
+
+[x] Add clear progress indicators.
+
+[x] Add error handling.
+
+[x] Add a final installation summary.
+
+[x] Report where the application was installed.
+
+[x] Report how to launch the application.
+
+10.5 Installation Requirements
+
+The setup script must be the primary installation method for the initial release.
+
+A user should be able to clone or download the repository, execute setup.sh, and have the application built and installed automatically.
+
+The user should not need to manually install dependencies, configure the build system, compile the application or copy files into system directories.
+
+The script should request elevated permissions only when necessary, rather than running the entire build process as root.
+
+**The objective is to create a focused, approachable music creation tool, not another full-scale DAW.**
